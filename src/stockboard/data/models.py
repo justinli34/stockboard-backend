@@ -24,7 +24,7 @@ class Interval(str, Enum):
 
 
 class OHLCV(BaseModel):
-    t: int
+    t: str
     o: float
     h: float
     l: float  # noqa: E741
@@ -33,5 +33,7 @@ class OHLCV(BaseModel):
 
 
 class TickerDailySnapshot(BaseModel):
-    # TODO: implement
-    pass
+    prices: list[OHLCV]
+    current_price: float
+    daily_return: float
+    daily_return_pct: float

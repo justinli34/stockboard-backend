@@ -1,4 +1,5 @@
-from datetime import date
+from datetime import date, timedelta
+from zoneinfo import ZoneInfo
 
 from yfinance import Ticker
 from yfinance import exceptions as yf_exceptions
@@ -28,7 +29,7 @@ def get_ohlcv(
 
     return [
         OHLCV(
-            t=int(ts.timestamp()),
+            t=ts.astimezone(ZoneInfo("America/New_York")).isoformat(),
             o=round(row["Open"], 4),
             h=round(row["High"], 4),
             l=round(row["Low"], 4),
@@ -41,5 +42,18 @@ def get_ohlcv(
 
 def get_daily_snapshot(ticker: str) -> TickerDailySnapshot:
     """Get the latest daily snapshot for a given ticker."""
-    # TODO: implement
-    return TickerDailySnapshot()
+    prices = get_ohlcv(
+        ticker=ticker,
+        from_date=date.today(),
+        to_date=date.today() + timedelta(days=1, minutes=5),
+        interval=Interval.min5,
+    )
+    current_price = prices[-1].c
+    daily_return = current_price - prices[0].o
+    daily_return_pct = (daily_return / prices[0].o) * 100
+    return TickerDailySnapshot(
+        prices=prices,
+        current_price=current_price,
+        daily_return=daily_return,
+        daily_return_pct=daily_return_pct,
+    )
