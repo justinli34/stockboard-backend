@@ -48,9 +48,12 @@ def get_daily_snapshot(ticker: str) -> TickerDailySnapshot:
         to_time=datetime.now(),
         interval=Interval.min5,
     )
+
     current_price = prices[-1].c
-    daily_return = round(current_price - prices[0].o, 2)
-    daily_return_pct = round((daily_return / prices[0].o) * 100, 2)
+    prev_close = Ticker(ticker.upper()).history(period="2d")["Close"].iloc[0]
+    daily_return = round(current_price - prev_close, 2)
+    daily_return_pct = round((daily_return / prev_close) * 100, 2)
+
     return TickerDailySnapshot(
         prices=prices,
         current_price=current_price,
