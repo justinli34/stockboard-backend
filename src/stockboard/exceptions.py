@@ -1,0 +1,2 @@
+class StockBoardException(Exception):
+    pass
