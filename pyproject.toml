@@ -8,7 +8,12 @@ version = "0.1.0"
 description = "API for StockBoard"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = ["fastapi>=0.135.1", "uvicorn>=0.41.0", "yfinance>=1.2.0"]
+dependencies = [
+    "fastapi>=0.135.1",
+    "pydantic>=2.12.5",
+    "uvicorn>=0.41.0",
+    "yfinance>=1.2.0",
+]
 
 [dependency-groups]
 dev = ["ruff>=0.15.5", "ty>=0.0.21"]
@@ -19,6 +24,9 @@ target-version = "py314"
 
 [tool.ruff.format]
 docstring-code-format = true
+
+[tool.ruff.lint]
+select = ["I"]
 
 [project.scripts]
 start = "stockboard.main:main"

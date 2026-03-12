@@ -459,6 +459,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
+    { name = "pydantic" },
     { name = "uvicorn" },
     { name = "yfinance" },
 ]
@@ -472,6 +473,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.135.1" },
+    { name = "pydantic", specifier = ">=2.12.5" },
     { name = "uvicorn", specifier = ">=0.41.0" },
     { name = "yfinance", specifier = ">=1.2.0" },
 ]
