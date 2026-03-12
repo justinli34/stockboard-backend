@@ -15,14 +15,14 @@ def stockboard_exception_handler(request, e):
     match e:
         case NoDataError():
             status = 404
-            detail = str(e)
         case RateLimitError():
             status = 429
-            detail = str(e)
-        case _:
-            status = 500
-            detail = "An unexpected error occurred. Please try again later."
-    return JSONResponse(status_code=status, content={"detail": detail})
+    return JSONResponse(status_code=status, content={"detail": str(e)})
+
+
+@app.exception_handler(Exception)
+def generic_exception_handler(request, e):
+    return JSONResponse(status_code=500, content={"detail": "An unexpected error occurred. Please try again later."})
 
 
 def main():
