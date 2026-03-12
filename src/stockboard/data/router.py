@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 
 from fastapi import APIRouter, Query
 
@@ -11,12 +11,12 @@ router = APIRouter(prefix="/data", tags=["data"])
 @router.get("/{ticker}/ohlcv")
 def get_ticker_ohlcv(
     ticker: str,
-    from_date: date = Query(..., alias="from"),
-    to_date: date = Query(..., alias="to"),
+    from_time: datetime = Query(..., alias="from"),
+    to_time: datetime = Query(..., alias="to"),
     interval: Interval = Query(...),
 ) -> list[OHLCV]:
     """Get OHLCV data for a given ticker and date range."""
-    return get_ohlcv(ticker, from_date, to_date, interval)
+    return get_ohlcv(ticker, from_time, to_time, interval)
 
 
 @router.get("/{ticker}/daily-snapshot")
