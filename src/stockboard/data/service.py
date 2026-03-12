@@ -19,9 +19,9 @@ def get_ticker_data(
 
     try:
         df = t.history(start=from_date, end=to_date, interval=interval.yf)
-    except yf_exceptions.YFRateLimitError as e:
+    except yf_exceptions.YFRateLimitError:
         raise RateLimitError()
-    except Exception as e:
+    except Exception:
         raise Exception("Error fetching historical data")
 
     if df.empty:

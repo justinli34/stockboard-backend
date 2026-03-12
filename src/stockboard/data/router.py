@@ -1,12 +1,10 @@
 from datetime import date
 
-from fastapi import APIRouter, HTTPException, Query
-from yfinance import Ticker
-from yfinance import exceptions as yf_exceptions
+from fastapi import APIRouter, Query
 
 from stockboard.data.schemas import TickerResponse
 from stockboard.data.service import get_ticker_data
-from stockboard.data.types import OHLCV, Interval
+from stockboard.data.types import Interval
 
 router = APIRouter(prefix="/data", tags=["data"])
 
