@@ -26,7 +26,7 @@ target-version = "py314"
 docstring-code-format = true
 
 [tool.ruff.lint]
-select = ["I"]
+select = ["E4", "E7", "E9", "F", "I"]
 
 [project.scripts]
 start = "stockboard.main:main"
