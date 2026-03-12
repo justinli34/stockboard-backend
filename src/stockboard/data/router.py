@@ -1,7 +1,8 @@
 from datetime import date
 
-import yfinance as yf
 from fastapi import APIRouter, HTTPException, Query
+from yfinance import Ticker
+from yfinance import exceptions as yf_exceptions
 
 from stockboard.data.schemas import TickerResponse
 from stockboard.data.types import OHLCV, Interval
@@ -17,11 +18,17 @@ def get_ticker(
     interval: Interval = Query(...),
 ) -> TickerResponse:
     """Get historical data for a given ticker and date range."""
-    t = yf.Ticker(ticker.upper())
-    df = t.history(start=from_date, end=to_date, interval=interval.yf)
+    t = Ticker(ticker.upper())
+
+    try:
+        df = t.history(start=from_date, end=to_date, interval=interval.yf)
+    except yf_exceptions.YFRateLimitError as e:
+        raise HTTPException(status_code=429, detail="Too many requests. Please try again later.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Error fetching historical data")
 
     if df.empty:
-        raise HTTPException(status_code=404, detail="No data found for the given ticker and range")
+        raise HTTPException(status_code=404, detail="No data found. Please check the ticker and date range.")
 
     data = [
         OHLCV(
