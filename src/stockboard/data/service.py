@@ -4,16 +4,15 @@ from yfinance import Ticker
 from yfinance import exceptions as yf_exceptions
 
 from stockboard.data.exceptions import NoDataError, RateLimitError
-from stockboard.data.schemas import TickerResponse
-from stockboard.data.types import OHLCV, Interval
+from stockboard.data.models import OHLCV, Interval, TickerDailySnapshot
 
 
-def get_ticker_data(
+def get_ohlcv(
     ticker: str,
     from_date: date,
     to_date: date,
     interval: Interval,
-) -> TickerResponse:
+) -> list[OHLCV]:
     """Get historical data for a given ticker and date range."""
     t = Ticker(ticker.upper())
 
@@ -27,7 +26,7 @@ def get_ticker_data(
     if df.empty:
         raise NoDataError("No data found. Please check the ticker and date range.")
 
-    data = [
+    return [
         OHLCV(
             t=int(ts.timestamp()),
             o=round(row["Open"], 4),
@@ -39,4 +38,8 @@ def get_ticker_data(
         for ts, row in df.iterrows()
     ]
 
-    return TickerResponse(ticker=ticker.upper(), interval=interval, from_date=from_date, to_date=to_date, data=data)
+
+def get_daily_snapshot(ticker: str) -> TickerDailySnapshot:
+    """Get the latest daily snapshot for a given ticker."""
+    # TODO: implement
+    return TickerDailySnapshot()

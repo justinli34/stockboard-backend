@@ -30,3 +30,8 @@ class OHLCV(BaseModel):
     l: float  # noqa: E741
     c: float
     v: int
+
+
+class TickerDailySnapshot(BaseModel):
+    # TODO: implement
+    pass
