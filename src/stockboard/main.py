@@ -36,7 +36,7 @@ def generic_exception_handler(request, e):
 
 
 def main():
-    uvicorn.run("stockboard.main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("stockboard.main:app", host="127.0.0.1", port=8000)
 
 
 if __name__ == "__main__":

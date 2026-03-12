@@ -1,4 +1,7 @@
-.PHONY: check fmt fmt-check
+.PHONY: dev check fmt fmt-check
+
+dev:
+	uv run watchfiles "uvicorn stockboard.main:app"
 
 check:
 	uv run ty check
