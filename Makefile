@@ -1,7 +1,4 @@
-.PHONY: start check fmt fmt-check
-
-start:
-	uv run stockboard/main.py
+.PHONY: check fmt fmt-check
 
 check:
 	uv run ty check

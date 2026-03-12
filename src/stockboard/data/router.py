@@ -1,33 +1,30 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query
 from datetime import date
 import yfinance as yf
 
-app = FastAPI()
+router = APIRouter(prefix="/data", tags=["data"])
 
-VALID_INTERVALS = {"1m", "5m", "15m", "30m", "1h", "4h", "1d", "1w", "1mo"}
-
+# Maps interval strings to yfinance-compatible intervals
 INTERVAL_MAP = {
     "1m": "1m",
     "5m": "5m",
-    "15m": "15m",
-    "30m": "30m",
     "1h": "1h",
-    "4h": "4h",
     "1d": "1d",
     "1w": "1wk",
     "1mo": "1mo",
 }
 
 
-@app.get("/data/{ticker}")
+@router.get("/{ticker}")
 def get_data(
     ticker: str,
     from_date: date = Query(..., alias="from"),
-    to_date: date = Query(default_factory=date.today, alias="to"),
+    to_date: date = Query(..., alias="to"),
     interval: str = Query(...),
 ):
-    if interval not in VALID_INTERVALS:
-        raise HTTPException(status_code=400, detail=f"Invalid interval. Choose from: {VALID_INTERVALS}")
+    """Get historical stock data for a given ticker and date range."""
+    if interval not in INTERVAL_MAP:
+        raise HTTPException(status_code=400, detail=f"Invalid interval. Choose from: {list(INTERVAL_MAP.keys())}")
 
     t = yf.Ticker(ticker)
     df = t.history(start=from_date, end=to_date, interval=INTERVAL_MAP[interval])
@@ -54,13 +51,3 @@ def get_data(
         "to": str(to_date),
         "data": data,
     }
-
-
-def main():
-    import uvicorn
-
-    uvicorn.run("__main__:app", host="127.0.0.1", port=8000, reload=True)
-
-
-if __name__ == "__main__":
-    main()
