@@ -4,10 +4,7 @@ dev:
 	uv run watchfiles "uvicorn stockboard.main:app"
 
 check:
-	uv run ty check
-
-fmt-check:
-	uv run ruff check
+	uv run ty check && uv run ruff check
 
 fmt:
 	uv run ruff check --fix
