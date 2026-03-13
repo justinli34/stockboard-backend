@@ -1,4 +1,4 @@
-.PHONY: dev check fmt fmt-check
+.PHONY: dev check format
 
 dev:
 	uv run watchfiles "uvicorn stockboard.main:app"
@@ -6,5 +6,5 @@ dev:
 check:
 	uv run ty check && uv run ruff check
 
-fmt:
-	uv run ruff check --fix
+format:
+	uv run ruff format
