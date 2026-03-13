@@ -1,27 +1,31 @@
-from datetime import datetime
-
 from fastapi import APIRouter, Query
 
-from stockboard.stocks.models import OHLCV, Interval, TickerDailySnapshot
-from stockboard.stocks.service import get_daily_snapshot, get_ohlcv
+from stockboard.stocks.models import OHLCV, PricePoint, Quote, Range, RangePeriod
+from stockboard.stocks.service import fetch_ohlcv, fetch_preview_data, fetch_quote
 
 router = APIRouter(prefix="/stocks", tags=["stocks"])
 
 
-@router.get("/{ticker}/ohlcv")
-def get_ticker_ohlcv(
-    ticker: str,
-    from_time: datetime = Query(..., alias="from"),
-    to_time: datetime = Query(..., alias="to"),
-    interval: Interval = Query(...),
-) -> list[OHLCV]:
-    """Get OHLCV data for a given ticker and date range."""
-    return get_ohlcv(ticker, from_time, to_time, interval)
+@router.get("/ohlcv")
+def get_ohlcv(
+    tickers: list[str] = Query(..., alias="tickers"),
+    range: RangePeriod = Query(..., alias="range"),
+) -> dict[str, list[OHLCV]]:
+    """Get OHLCV data for the given tickers and time range."""
+    return {ticker: fetch_ohlcv(ticker, Range(period=range)) for ticker in tickers}
 
 
-@router.get("/{ticker}/daily-snapshot")
-def get_ticker_daily_snapshot(
-    ticker: str,
-) -> TickerDailySnapshot:
-    """Get the latest daily snapshot for a given ticker."""
-    return get_daily_snapshot(ticker)
+@router.get("/quotes")
+def get_quotes(
+    tickers: list[str] = Query(..., alias="tickers"),
+) -> dict[str, Quote]:
+    """Get daily quotes for the given tickers."""
+    return {ticker: fetch_quote(ticker) for ticker in tickers}
+
+
+@router.get("/preview-data")
+def get_preview_data(
+    tickers: list[str] = Query(..., alias="tickers"),
+) -> dict[str, list[PricePoint]]:
+    """Get preview data for the given tickers."""
+    return {ticker: fetch_preview_data(ticker) for ticker in tickers}

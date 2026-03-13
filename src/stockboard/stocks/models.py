@@ -1,30 +1,31 @@
-from enum import Enum
+from typing import ClassVar, Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, computed_field
+
+RangePeriod = Literal["1d", "5d", "1mo", "3mo", "ytd", "1y", "5y"]
 
 
-class Interval(str, Enum):
-    min1 = "1min"
-    min5 = "5min"
-    h1 = "1h"
-    d1 = "1d"
-    w1 = "1w"
-    mo1 = "1mo"
+class Range(BaseModel):
+    period: Literal["1d", "5d", "1mo", "3mo", "ytd", "1y", "5y"]
 
+    _INTERVALS: ClassVar[dict[RangePeriod, str]] = {
+        "1d": "1m",
+        "5d": "15m",
+        "1mo": "1d",
+        "3mo": "1d",
+        "ytd": "1d",
+        "1y": "1d",
+        "5y": "1wk",
+    }
+
+    @computed_field
     @property
-    def yf(self) -> str:
-        return {
-            "1min": "1m",
-            "5min": "5m",
-            "1h": "1h",
-            "1d": "1d",
-            "1w": "1wk",
-            "1mo": "1mo",
-        }[self.value]
+    def interval(self) -> str:
+        return self._INTERVALS[self.period]
 
 
 class OHLCV(BaseModel):
-    t: str
+    time: str
     o: float
     h: float
     l: float  # noqa: E741
@@ -32,8 +33,12 @@ class OHLCV(BaseModel):
     v: int
 
 
-class TickerDailySnapshot(BaseModel):
-    prices: list[OHLCV]
+class Quote(BaseModel):
     current_price: float
     daily_return: float
     daily_return_pct: float
+
+
+class PricePoint(BaseModel):
+    time: str
+    price: float
