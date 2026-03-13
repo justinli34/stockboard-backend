@@ -4,9 +4,9 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
-from stockboard.data.exceptions import NoDataError, RateLimitError
-from stockboard.data.router import router as data_router
 from stockboard.exceptions import StockBoardException
+from stockboard.stocks.exceptions import NoDataError, RateLimitError
+from stockboard.stocks.router import router as data_router
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -32,7 +32,9 @@ def stockboard_exception_handler(request, e):
 @app.exception_handler(Exception)
 def generic_exception_handler(request, e):
     logger.error(f"An unexpected error occurred: {e}")
-    return JSONResponse(status_code=500, content={"detail": "An unexpected error occurred. Please try again later."})
+    return JSONResponse(
+        status_code=500, content={"detail": "An unexpected error occurred. Please try again later."}
+    )
 
 
 def main():

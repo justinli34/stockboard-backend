@@ -4,8 +4,8 @@ from zoneinfo import ZoneInfo
 from yfinance import Ticker
 from yfinance import exceptions as yf_exceptions
 
-from stockboard.data.exceptions import NoDataError, RateLimitError
-from stockboard.data.models import OHLCV, Interval, TickerDailySnapshot
+from stockboard.stocks.exceptions import NoDataError, RateLimitError
+from stockboard.stocks.models import OHLCV, Interval, TickerDailySnapshot
 
 
 def get_ohlcv(

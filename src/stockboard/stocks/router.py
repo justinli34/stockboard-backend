@@ -2,10 +2,10 @@ from datetime import datetime
 
 from fastapi import APIRouter, Query
 
-from stockboard.data.models import OHLCV, Interval, TickerDailySnapshot
-from stockboard.data.service import get_daily_snapshot, get_ohlcv
+from stockboard.stocks.models import OHLCV, Interval, TickerDailySnapshot
+from stockboard.stocks.service import get_daily_snapshot, get_ohlcv
 
-router = APIRouter(prefix="/data", tags=["data"])
+router = APIRouter(prefix="/stocks", tags=["stocks"])
 
 
 @router.get("/{ticker}/ohlcv")
